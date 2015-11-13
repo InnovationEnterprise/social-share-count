@@ -1,0 +1,95 @@
+<style>
+  .m-social {
+    list-style: none;
+  }
+
+  .m-social__item {
+    display: inline-block;
+  }
+
+  @supports (display: flex) {
+    .m-social {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+</style>
+
+<ul class="m-social">
+  <li class="m-social__item">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fchannels.theinnovationenterprise.com">
+      <picture>
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="images/facebook.svg" type="image/svg+xml">
+        <!--[if IE 9]></video><![endif]-->
+        <img src="images/facebook.png" alt="Share on Facebook" width="32" height="32">
+      </picture>
+    </a>
+  </li>
+
+  <li class="m-social__item">
+    <a href="https://twitter.com/intent/tweet?text=The+Innovation+Enterprise+Group&url=https%3A%2F%2Fchannels.theinnovationenterprise.com&via=iegroup">
+      <picture>
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="images/twitter.svg" type="image/svg+xml">
+        <!--[if IE 9]></video><![endif]-->
+        <img src="images/twitter.png" alt="Share on Twitter" width="32" height="32">
+      </picture>
+    </a>
+  </li>
+
+  <li class="m-social__item">
+    <a href="https://plus.google.com/share?url=https%3A%2F%2Fchannels.theinnovationenterprise.com">
+      <picture>
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="images/gplus.svg" type="image/svg+xml">
+        <!--[if IE 9]></video><![endif]-->
+        <img src="images/gplus.png" alt="Share on Google Plus" width="32" height="32">
+      </picture>
+    </a>
+  </li>
+
+  <li class="m-social__item">
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fchannels.theinnovationenterprise.com&title=The+Innovation+Enterprise+Group">
+      <picture>
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="images/linkedin.svg" type="image/svg+xml">
+        <!--[if IE 9]></video><![endif]-->
+        <img src="images/linkedin.png" alt="Share on LinkedIn" width="32" height="32">
+      </picture>
+    </a>
+  </li>
+
+  <li class="m-social__item">
+    <a href="http://bufferapp.com/add?text=The+Innovation+Enterprise+Group&url=https%3A%2F%2Fchannels.theinnovationenterprise.com">
+      <picture>
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="images/buffer.svg" type="image/svg+xml">
+        <!--[if IE 9]></video><![endif]-->
+        <img src="images/buffer.png" alt="Share on Buffer" width="32" height="32">
+      </picture>
+    </a>
+  </li>
+</ul>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>
+function twitter(url, callback){
+  $.ajax({
+      type : 'GET',
+      dataType : 'jsonp',
+      url : 'https://cdn.api.twitter.com/1/urls/count.json',
+      data : {'url': url}
+  })
+  .done(function(data){callback(data.count);})
+  .fail(function(data){callback(0);})
+}
+
+function display(response) {
+  console.log(response);
+}
+
+twitter('https://cdn.api.twitter.com/1/urls/count.json?url=https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation', display);
+</script>
