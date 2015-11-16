@@ -1,29 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <script type="text/javascript" src="SocialShare.js"></script>
-        
-        <script type="text/javascript">
-            $(document).ready(function(){
-                $('.counter').ShareCounter({
-                    url: 'https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation'
-                });
-                 
-            });
-        </script>
-    </head>
-    <body>
-      Twitter <span class='counter c_twitter'></span><br>
+<style>
+  .m-social {
+    list-style: none;
+    padding: 0;
+  }
 
-      Facebook <span class='counter c_facebook'></span><br>
+  .m-social__item {
+    display: inline-block;
+  }
 
-      Linkedin <span class='counter c_linkedin'></span><br>
+  .m-social__link {
+    text-decoration: none;
+  }
 
-      Google + <span class='counter c_plus'></span><br>
+  @supports (display: flex) {
+    .m-social {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+</style>
 
-      Buffer <span class='counter c_buffer'></span>
-<p>test</p>
-    </body>
-</html>
+<ul class="m-social">
+  <li class="m-social__item">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fchannels.theinnovationenterprise.com" class="m-social__link">
+      <picture>
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="images/facebook.svg" type="image/svg+xml">
+        <!--[if IE 9]></video><![endif]-->
+        <img src="images/facebook.png" alt="Share on Facebook" width="32" height="32">
+      </picture>
+    </a>
+    <span class="counter liteSocial-facebook"></span>
+  </li>
+
+  <li class="m-social__item">
+    <a href="https://twitter.com/intent/tweet?text=The+Innovation+Enterprise+Group&url=https%3A%2F%2Fchannels.theinnovationenterprise.com&via=iegroup" class="m-social__link" class="m-social__link">
+      <picture>
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="images/twitter.svg" type="image/svg+xml">
+        <!--[if IE 9]></video><![endif]-->
+        <img src="images/twitter.png" alt="Share on Twitter" width="32" height="32">
+      </picture>
+    </a>
+    <span class="counter liteSocial-twitter"></span>
+  </li>
+
+  <li class="m-social__item">
+    <a href="https://plus.google.com/share?url=https%3A%2F%2Fchannels.theinnovationenterprise.com" class="m-social__link">
+      <picture>
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="images/gplus.svg" type="image/svg+xml">
+        <!--[if IE 9]></video><![endif]-->
+        <img src="images/gplus.png" alt="Share on Google Plus" width="32" height="32">
+      </picture>
+    </a>
+    <span class="counter liteSocial-gplus"></span>
+  </li>
+
+  <li class="m-social__item">
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fchannels.theinnovationenterprise.com&title=The+Innovation+Enterprise+Group" class="m-social__link">
+      <picture>
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="images/linkedin.svg" type="image/svg+xml">
+        <!--[if IE 9]></video><![endif]-->
+        <img src="images/linkedin.png" alt="Share on LinkedIn" width="32" height="32">
+      </picture>
+    </a>
+    <span class="counter liteSocial-linkedin"></span>
+  </li>
+
+  <li class="m-social__item">
+    <a href="http://bufferapp.com/add?text=The+Innovation+Enterprise+Group&url=https%3A%2F%2Fchannels.theinnovationenterprise.com" class="m-social__link">
+      <picture>
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="images/buffer.svg" type="image/svg+xml">
+        <!--[if IE 9]></video><![endif]-->
+        <img src="images/buffer.png" alt="Share on Buffer" width="32" height="32">
+      </picture>
+    </a>
+    <span class="counter liteSocial-buffer"></span>
+  </li>
+</ul>
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="lite-social.js"></script>
