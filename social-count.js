@@ -4,7 +4,7 @@
 
   this.options = options || {};
   this.url = this.options.url || window.location.href;
-  this.prefix = this.options.prefix || 'liteSocial-';
+  this.prefix = this.options.prefix || 'socialCount-';
 
   var prefix_length = this.prefix.length;
 
