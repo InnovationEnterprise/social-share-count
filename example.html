@@ -1,15 +1,56 @@
 <style>
+  body {
+    font-family: sans-serif;
+  }
   .m-social {
     list-style: none;
     padding: 0;
   }
 
   .m-social__item {
+    text-align: center;
     display: inline-block;
   }
 
   .m-social__link {
     text-decoration: none;
+  }
+
+  .m-social__counter {
+    background: #ffe;
+    border: 1px solid #eaeaea;
+    border-radius: 3px;
+    text-align: center;
+    padding: 0.5em;
+    position: relative;
+    display: block;
+    margin-top: 0.75em;
+  }
+
+  @supports (transform: rotate(45deg)) {
+    .m-social__counter::before {
+      content: "";
+      background: #eaeaea;
+      position: absolute;
+      left: calc(50% - 0.25em);
+      top: -0.25em;
+      display: block;
+      width: 0.5em;
+      height: 0.5em;
+      transform: rotate(45deg);
+    }
+
+    .m-social__counter::after {
+      content: "";
+      background: #ffe;
+      position: absolute;
+      left: calc(50% - 0.25em);
+      top: -0.1875em;
+      display: block;
+      width: 0.5em;
+      height: 0.5em;
+      transform: rotate(45deg);
+    }
   }
 
   @supports (display: flex) {
@@ -32,7 +73,7 @@
         <img src="images/facebook.png" alt="Share on Facebook" width="32" height="32">
       </picture>
     </a>
-    <span class="counter liteSocial-facebook"></span>
+    <span class="m-social__counter liteSocial-facebook"></span>
   </li>
 
   <li class="m-social__item">
@@ -44,7 +85,7 @@
         <img src="images/twitter.png" alt="Share on Twitter" width="32" height="32">
       </picture>
     </a>
-    <span class="counter liteSocial-twitter"></span>
+    <span class="m-social__counter liteSocial-twitter"></span>
   </li>
 
   <li class="m-social__item">
@@ -56,7 +97,7 @@
         <img src="images/gplus.png" alt="Share on Google Plus" width="32" height="32">
       </picture>
     </a>
-    <span class="counter liteSocial-gplus"></span>
+    <span class="m-social__counter liteSocial-gplus"></span>
   </li>
 
   <li class="m-social__item">
@@ -68,7 +109,7 @@
         <img src="images/linkedin.png" alt="Share on LinkedIn" width="32" height="32">
       </picture>
     </a>
-    <span class="counter liteSocial-linkedin"></span>
+    <span class="m-social__counter liteSocial-linkedin"></span>
   </li>
 
   <li class="m-social__item">
@@ -80,7 +121,7 @@
         <img src="images/buffer.png" alt="Share on Buffer" width="32" height="32">
       </picture>
     </a>
-    <span class="counter liteSocial-buffer"></span>
+    <span class="m-social__counter liteSocial-buffer"></span>
   </li>
 </ul>
 
