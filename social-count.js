@@ -1,5 +1,5 @@
-;window.LiteSocial = function(el, options) {
-  if(!el && !('classList' in document.createElement('a')))
+;window.SocialCounts = function(el, options) {
+  if(!el || !('classList' in document.createElement('a')))
     return;
 
   this.options = options || {};
@@ -114,5 +114,5 @@
 var spans = document.querySelectorAll('span');
 
 for(var i = 0, ii = spans.length; i < ii; i++) {
-  new LiteSocial(spans[i], {url: 'https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation'});
+  new SocialCounts(spans[i], {url: 'https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation'});
 }
