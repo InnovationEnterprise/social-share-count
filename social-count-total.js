@@ -1,52 +1,46 @@
-var total_shares = {
+;window.SocialCountsTotal = function(el, options) {
+  if(!el || !('textContent' in document.createElement('a')) || !Object.keys({1:1}).length)
+    return;
 
-  // Setup
-  //url: window.location.href,
-  url: 'https://www.google.com',
-  dom_node: document.getElementById('test'),
-  total: 0,
-  incrementor: 0,
-  networks: [],
+  this.options = options || {};
+  this.url = this.options.url || window.location.href;
 
-  get_shares: function(count) {
-    // Add all the network functions to the networks array
-    this.networks.push(this.twitter);
-    this.networks.push(this.facebook);
-    this.networks.push(this.linkedin);
-    this.networks.push(this.gplus);
-    this.networks.push(this.buffer);
+  var networks = {
+    twitter: twitter,
+    facebook: facebook,
+    linkedin: linkedin,
+    gplus: gplus,
+    buffer: buffer
+  };
 
-    // Reference total_shares
-    var that = this;
+  var incrementor = 0, // Counts the async calls
+      total = 0; // Total shares
 
-    // Call the specific functions for each network
-    for(var i = 0, ii = this.networks.length; i < ii; i++) {
-      this.networks[i](this.url, function(count) {
+  for(var network in networks) {
+    if(networks.hasOwnProperty(network)) {
+      networks[network](this.url, function(count) {
         // Update the total of shares
-        update_total(count, that.incrementor++);
+        update_total(count, incrementor++);
       });
     }
+  }
 
-    function update_total(count, increment) {
-      that.total += count;
+  function update_total(count, increment) {
+    total += count;
 
-      if(that.incrementor === that.networks.length) {
-        that.dom_node.textContent = that.total;
-      }
+    if(incrementor === Object.keys(networks).length) {
+      el.textContent = total;
     }
-
-    //return totalAmountOfShares;
-  },
+  }
 
   /********
    *
-   * GET THE RESPONSE FROM EACH NETWORK
+   * HANDLE THE RESPONSE FROM EACH NETWORK
    *
    ********/
   // Twitter
-  twitter: function(url, callback) {
+  function twitter(url, callback) {
     jQuery.ajax({
-
       type: 'GET',
       dataType: 'jsonp',
       url: 'https://cdn.api.twitter.com/1/urls/count.json',
@@ -54,11 +48,11 @@ var total_shares = {
     })
     .done(function(data) { callback(data.count); })
     .fail(function(data) { callback(0); });
-  },
+  }
 
   // Facebook
   // Has CORS enabled so can use XHR
-  facebook: function(url, callback) {
+  function facebook(url, callback) {
     jQuery.ajax({
       type: 'GET',
       dataType: 'json',
@@ -67,10 +61,10 @@ var total_shares = {
     })
     .done(function(data) { callback(data.shares); })
     .fail(function(data) { callback(0); });
-  },
+  }
 
   // LinkedIn
-  linkedin: function(url, callback) {
+  function linkedin(url, callback) {
     jQuery.ajax({
       type: 'GET',
       dataType: 'jsonp',
@@ -79,10 +73,10 @@ var total_shares = {
     })
     .done(function(data) { callback(data.count); })
     .fail(function(data) { callback(0); });
-  },
+  }
 
   // Google Plus
-  gplus: function(url, callback) {
+  function gplus(url, callback) {
     jQuery.ajax({
       type: 'POST',
       url: 'https://clients6.google.com/rpc',
@@ -105,10 +99,10 @@ var total_shares = {
     })
     .done(function(data) { callback(data.result.metadata.globalCounts.count); })
     .fail(function(data) { callback(0); });
-  },
+  }
 
   // Buffer
-  buffer: function(url, callback) {
+  function buffer(url, callback) {
     jQuery.ajax({
       type: 'GET',
       dataType: 'jsonp',
@@ -118,6 +112,7 @@ var total_shares = {
     .done(function(data) { callback(data.shares); })
     .fail(function(data) { callback(0); });
   }
-}
+};
 
-total_shares.get_shares();
+// E.g.
+new SocialCountsTotal(document.querySelector('body'), {url: 'https://www.google.com'});
