@@ -63,6 +63,7 @@
         if(el.classList[key].substr(0, prefix_length) === this.prefix) {
           // Run the function with the name that matches the rest of the class
           networks[el.classList[key].substr(prefix_length)](this.url, function(count) {
+            el.classList.remove('is-hidden');
             el.textContent = count;
           });
         }
@@ -151,14 +152,6 @@
   }
 };
 
-// E.g.
-var spans = document.querySelectorAll('span');
-
-for(var i = 0, ii = spans.length; i < ii; i++) {
-  new SocialCounts(spans[i], {url: 'https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation'});
-}
-new SocialCounts(document.getElementById('total'), {url: 'https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation', total: true});
-
   /********
    *
    * Enhance each button so they open popups
@@ -202,3 +195,15 @@ new SocialCounts(document.getElementById('total'), {url: 'https://channels.thein
     }
   }
 }(this, this.document));
+
+  /********
+   *
+   * Example usage
+   *
+   ********/
+var spans = document.querySelectorAll('span');
+
+for(var i = 0, ii = spans.length; i < ii; i++) {
+  new SocialCounts(spans[i], {url: 'https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation'});
+}
+new SocialCounts(document.getElementById('total'), {url: 'https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation', total: true});
