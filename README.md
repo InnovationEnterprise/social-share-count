@@ -59,12 +59,16 @@ Same as above but the config object must contain a `total` property set to `true
 | `prefix` | The common prefix for the empty elements used when displaying individual shares. Default is `socialCount-` |
 | `total` | Must be set to a truthy value for the total number of shares to be displayed in the specified element.
 
+For example to change the prefix to `js-` and the URL to the Google home page while displaying the total number of shares, use:
+
+`new SocialCounts(referenceToYourElement, {prefix: 'js-', url: 'https://www.google.com/', total: true});`
+
 ## Demo
 
 http://InnovationEnterprise.github.io/social-share-count/example.html
 
 ## Code of Conduct
 
-In order to have an inclusive and welcoming community around the open source code we produce we have decided to adhere to this [code of conduct](https://github.com/InnovationEnterprise/slideme-ie/blob/master/CONDUCT.md).
+In order to have an inclusive and welcoming community around the open source code we produce we have decided to adhere to this [code of conduct](CONDUCT.md).
 
 Please adhere to this code of conduct in any interactions you have in this community. It is strictly enforced on all official Innovation Enterprise repositories, websites, and resources. If you encounter someone violating these terms, please let a maintainer (@derekjohnson) know and we will address it as soon as possible.
