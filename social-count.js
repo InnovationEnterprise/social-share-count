@@ -6,7 +6,6 @@
   this.url = this.options.url || window.location.href;
 
   var networks = {
-    twitter: twitter,
     facebook: facebook,
     linkedin: linkedin,
     gplus: gplus,
@@ -76,18 +75,6 @@
    * Handle the response from each network
    *
    ********/
-  // Twitter
-  function twitter(url, callback) {
-    jQuery.ajax({
-      type: 'GET',
-      dataType: 'jsonp',
-      url: 'https://cdn.api.twitter.com/1/urls/count.json',
-      data: {'url': url}
-    })
-    .done(function(data) { callback(data.count); })
-    .fail(function(data) { callback(0); });
-  }
-
   // Facebook
   // Has CORS enabled so can use XHR
   function facebook(url, callback) {
