@@ -3,7 +3,11 @@
     return
 
   this.options = options || {};
-  this.url = this.options.url || window.location.href;
+
+  if(document.querySelector('link[rel=canonical]') && document.querySelector('link[rel=canonical]').href)
+    var canonical = document.querySelector('link[rel=canonical]').href;
+
+  this.url = this.options.url || (canonical ? canonical : window.location.href);
 
   var networks = {
     twitter: twitter,
