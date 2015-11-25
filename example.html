@@ -12,6 +12,10 @@
     min-width: 3.8125em;
   }
 
+  .m-social__item--no-count {
+    min-width: 0;
+  }
+
   .m-social__link {
     color: #fff;
     text-decoration: none;
@@ -84,6 +88,17 @@
 </style>
 
 <ul class="m-social">
+  <li class="m-social__item m-social__item--no-count">
+    <a href="https://twitter.com/intent/tweet?text=The+Innovation+Enterprise+Group&url=https%3A%2F%2Fchannels.theinnovationenterprise.com&via=iegroup" class="m-social__link">
+      <picture>
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="images/twitter.svg" type="image/svg+xml">
+        <!--[if IE 9]></video><![endif]-->
+        <img class="m-social__icon" src="images/twitter.png" alt="Share on Twitter" width="32" height="32">
+      </picture>
+    </a>
+  </li>
+
   <li class="m-social__item">
     <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fchannels.theinnovationenterprise.com" class="m-social__link m-social__link--facebook">
       <picture>
@@ -94,17 +109,6 @@
       </picture>
 
       <span class="m-social__counter socialCount-facebook"></span>
-    </a>
-  </li>
-
-  <li class="m-social__item">
-    <a href="https://twitter.com/intent/tweet?text=The+Innovation+Enterprise+Group&url=https%3A%2F%2Fchannels.theinnovationenterprise.com&via=iegroup" class="m-social__link">
-      <picture>
-        <!--[if IE 9]><video style="display: none;"><![endif]-->
-        <source srcset="images/twitter.svg" type="image/svg+xml">
-        <!--[if IE 9]></video><![endif]-->
-        <img class="m-social__icon" src="images/twitter.png" alt="Share on Twitter" width="32" height="32">
-      </picture>
     </a>
   </li>
 
