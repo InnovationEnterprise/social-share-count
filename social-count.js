@@ -1,11 +1,13 @@
 ;window.SocialCounts = function(el, options) {
-  if(!el)
+  if(!el) {
     return
+  }
 
   this.options = options || {};
 
-  if(document.querySelector('link[rel=canonical]') && document.querySelector('link[rel=canonical]').href)
+  if(document.querySelector('link[rel=canonical]') && document.querySelector('link[rel=canonical]').href) {
     var canonical = document.querySelector('link[rel=canonical]').href;
+  }
 
   this.url = this.options.url || (canonical ? canonical : window.location.href);
 
