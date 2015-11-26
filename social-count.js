@@ -103,7 +103,13 @@
       url: 'https://graph.facebook.com/',
       data: {'id': url}
     })
-    .done(function(data) { callback(data.shares); })
+    .done(function(data) {
+      if(data.shares) {
+        callback(data.shares);
+      } else {
+        callback(0);
+      }
+    })
     .fail(function(data) { callback(0); });
   }
 
