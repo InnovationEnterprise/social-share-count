@@ -90,11 +90,15 @@
       url: 'https://graph.facebook.com/',
       data: {'id': url}
     })
-    .done(function(data) {
-      if(data.shares) {
-        callback(data.shares);
-      } else {
+    .done(function(data, status, jqxhr) {
+      if(jqxhr.status !== 200) {
         callback(0);
+      } else {
+        if(data.shares) {
+          callback(data.shares);
+        } else {
+          callback(0);
+        }
       }
     })
     .fail(function(data) { callback(0); });
