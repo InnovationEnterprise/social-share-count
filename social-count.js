@@ -24,8 +24,9 @@
    *
    ********/
   if(this.options.total) {
-    if(!('textContent' in document.createElement('a')) || !Object.keys({1:1}).length)
+    if(!('textContent' in document.createElement('a')) || !Object.keys({1:1}).length) {
       return;
+    }
 
     var incrementor = 0, // Counts the async calls
         total = 0; // Total shares
@@ -54,8 +55,9 @@
    *
    ********/
   else {
-    if(!('classList' in document.createElement('a')))
+    if(!('classList' in document.createElement('a'))) {
       return;
+    }
 
     this.prefix = this.options.prefix || 'socialCount-';
 
