@@ -140,7 +140,13 @@
         'apiVersion': 'v1'
       })
     })
-    .done(function(data) { callback(data.result.metadata.globalCounts.count); })
+    .done(function(data) {
+      if(data.result) {
+        callback(data.result.metadata.globalCounts.count);
+      } else {
+        callback(0);
+      }
+    })
     .fail(function(data) { callback(0); });
   }
 
