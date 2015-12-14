@@ -9,7 +9,7 @@
     var canonical = document.querySelector('link[rel=canonical]').href;
   }
 
-  this.url = this.options.url || (canonical ? canonical : window.location.href);
+  this.url = this.options.url || (canonical || window.location.href);
 
   var networks = {
     facebook: facebook,
