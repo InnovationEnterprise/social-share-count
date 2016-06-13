@@ -39,7 +39,7 @@ JS:
 var spans = document.querySelectorAll('[class^=socialCount]');
 
 for(var i = 0, ii = spans.length; i < ii; i++) {
-  new SocialCounts(spans[i]);
+  SocialCounts(spans[i]);
 }
 ```
 
@@ -71,4 +71,8 @@ http://InnovationEnterprise.github.io/social-share-count/example.html
 
 In order to have an inclusive and welcoming community around the open source code we produce we have decided to adhere to this [code of conduct](CONDUCT.md).
 
-Please adhere to this code of conduct in any interactions you have in this community. It is strictly enforced on all official Innovation Enterprise repositories, websites, and resources. If you encounter someone violating these terms, please let a maintainer (@derekjohnson) know and we will address it as soon as possible.
+Please adhere to this code of conduct in any interactions you have in this community. It is strictly enforced on all official Innovation Enterprise repositories, websites, and resources. If you encounter someone violating these terms, please let a maintainer ([@derekjohnson](https://github.com/derekjohnson)) know and we will address it as soon as possible.
+
+## Follow Us
+
+If you like what we have done here or have any questions be sure to reach out to us on [Twitter](https://twitter.com/IE_DevTeam)
