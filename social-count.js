@@ -1,220 +1,216 @@
-;window.SocialCounts = function(el, options) {
+window.SocialCounts = function(el, options) {
   if(!el) {
-    return
+    return;
   }
 
   this.options = options || {};
+  this.url = this.options.url || window.location.href;
 
-  if(document.querySelector('link[rel=canonical]') && document.querySelector('link[rel=canonical]').href) {
-    var canonical = document.querySelector('link[rel=canonical]').href;
+  var thisName = this.url;
+  var thisId = thisName.replace(/[^a-z0-9 ,.?!]/ig, '').replace(/\./g,'');
+  if (options.total) {
+    thisId = thisId + 'total';
+  }
+  if (!window[thisId]) {
+    window[thisId] = {
+      'total' : 0,
+      'counted' : 0,
+      'totalView' : false,
+      'facebook': false,
+      'gplus': false,
+      'linkedin': false,
+      'buffer': false
+    };
   }
 
-  this.url = this.options.url || (canonical || window.location.href);
+  if (options.total) {
+    window[thisId].totalView = el;
+  }
 
-  var networks = {
-    facebook: facebook,
-    linkedin: linkedin,
-    gplus: gplus,
-    buffer: buffer
+  function setShareCount(data, el, thisId) {
+    window[thisId].total = window[thisId].total + data;
+    window[thisId].counted = window[thisId].counted + 1;
+    if (!options.total){
+      el.classList.remove('is-hidden');
+      el.textContent = data;
+    }
+    if (window[thisId].counted === 4 && window[thisId].totalView) {
+      window[thisId].totalView.textContent = window[thisId].total;
+      delete window[thisId];
+    }
+  }
+
+  if (window[thisId].counted === 4) {
+    setShareCount(0, el, thisName);
+  }
+
+  window[thisId].callAsyncCount = function(data) {
+    var that = thisId;
+    if (data.shares) {
+      window[that].buffer = data.shares;
+      window[that].total = window[that].total + data.shares;
+      if (window[that].bufferContainer){
+        window[that].bufferContainer.classList.remove('is-hidden');
+        window[that].bufferContainer.textContent = data.shares;
+      }
+    } else if (data.count) {
+      window[that].linkedin = data.count;
+      window[that].total = window[that].total + data.count;
+      if (window[that].linkedinContainer){
+        window[that].linkedinContainer.classList.remove('is-hidden');
+        window[that].linkedinContainer.textContent = data.count;
+      }
+    }
+    window[that].counted = window[that].counted + 1;
+    if (window[that].counted === 4 && window[that].totalView) {
+      window[that].totalView.textContent = window[that].total;
+      delete window[thisId];
+    }
   };
 
-  /********
-   *
-   * Option 1. Display the total of all counts
-   *
-   ********/
-  if(this.options.total) {
-    if(!('textContent' in document.createElement('a')) || !Object.keys({1:1}).length) {
-      return;
-    }
-
-    var incrementor = 0, // Counts the async calls
-        total = 0; // Total shares
-
-    for(var network in networks) {
-      if(networks.hasOwnProperty(network)) {
-        networks[network](this.url, function(count) {
-          // Update the total of shares
-          update_total(count, incrementor++);
-        });
-      }
-    }
-
-    function update_total(count, increment) {
-      total += count;
-
-      if(incrementor === Object.keys(networks).length) {
-        el.textContent = total;
-      }
-    }
-  }
-
-  /********
-   *
-   * Option 2. Put the count beside its respective button
-   *
-   ********/
-  else {
-    if(!('classList' in document.createElement('a'))) {
-      return;
-    }
-
-    this.prefix = this.options.prefix || 'socialCount-';
-
-    var prefix_length = this.prefix.length;
-
-    // Check if the element has a class with `this.prefix` at the start of it
-    // Only check the props in `classList` that are strings
-    for(var key in el.classList) {
-      if(typeof el.classList[key] === 'string') {
-        if(el.classList[key].substr(0, prefix_length) === this.prefix) {
-          // Run the function with the name that matches the rest of the class
-          networks[el.classList[key].substr(prefix_length)](this.url, function(count) {
-            el.classList.remove('is-hidden');
-            el.textContent = count;
-          });
-        }
-      }
-    }
-  }
-
-  /********
-   *
-   * Handle the response from each network
-   *
-   ********/
   // Facebook
   // Has CORS enabled so can use XHR
-  function facebook(url, callback) {
-    jQuery.ajax({
-      type: 'GET',
-      dataType: 'json',
-      url: 'https://graph.facebook.com/',
-      data: {'id': url}
-    })
-    .done(function(data, status, jqxhr) {
-      if(jqxhr.status !== 200) {
-        callback(0);
-      } else {
-        if(data.shares) {
-          callback(data.shares);
-        } else {
-          callback(0);
+  if ((el.classList.contains('socialCount-facebook') || options.total) && !window[thisId].facebook) {
+    window[thisId].facebook = true;
+    (function(url, thisId){
+      var facebookRequest = new XMLHttpRequest();
+      facebookRequest.open('GET', 'https://graph.facebook.com/?id=' + url, true);
+      facebookRequest.onreadystatechange = function() {
+        if (this.readyState === 4) {
+          if (this.status >= 200 && this.status < 400) {
+            var data = JSON.parse(this.responseText);
+            if (data.shares) {
+              window[thisId].facebook = data.shares;
+              setShareCount(data.shares, el, thisId);
+            } else {
+              window[thisId].facebook = 0;
+              setShareCount(0, el, thisId);
+            }
+          } else {
+            window[thisId].facebook = 0;
+            setShareCount(0, el, thisId);
+          }
         }
-      }
-    })
-    .fail(function(data) { callback(0); });
+      };
+      facebookRequest.send();
+    })(thisName, thisId);
   }
 
-  // LinkedIn
-  function linkedin(url, callback) {
-    jQuery.ajax({
-      type: 'GET',
-      dataType: 'jsonp',
-      url: 'https://www.linkedin.com/countserv/count/share',
-      data: {'url': url, 'format': 'jsonp'}
-    })
-    .done(function(data) { callback(data.count); })
-    .fail(function(data) { callback(0); });
+  if ((el.classList.contains('socialCount-linkedin') || options.total) && !window[thisId].linkedin) {
+    window[thisId].linkedin = 0;
+    if (el.classList.contains('socialCount-linkedin')) {
+      window[thisId].linkedinContainer = el;
+    }
+    (function(url, thisId){
+      var scriptLinkedin = document.createElement('script');
+      scriptLinkedin.src = 'https://www.linkedin.com/countserv/count/share?format=jsonp&callback=window.'+thisId+'.callAsyncCount&url=' + url;
+      scriptLinkedin.onerror = function() {
+        setShareCount(0, el, thisId);
+      };
+      document.getElementsByTagName('head')[0].appendChild(scriptLinkedin);
+    })(thisName, thisId);
   }
+
 
   // Google Plus
-  function gplus(url, callback) {
-    jQuery.ajax({
-      type: 'POST',
-      url: 'https://clients6.google.com/rpc',
-      processData: true,
-      contentType: 'application/json',
-      data: JSON.stringify({
-        'method': 'pos.plusones.get',
-        'id': location.href,
-        'params': {
-          'nolog': true,
-          'id': url,
-          'source': 'widget',
-          'userId': '@viewer',
-          'groupId': '@self'
+  if ((el.classList.contains('socialCount-gplus') || options.total) && !window[thisId].gplus) {
+    window[thisId].gplus = 0;
+    (function(url, thisId){
+      var requestGoogle = new XMLHttpRequest();
+      requestGoogle.open('POST', 'https://clients6.google.com/rpc', true);
+      requestGoogle.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+      var thisDataGoogle = JSON.stringify({
+        "method":"pos.plusones.get",
+        "id":"p",
+        "params":{
+          "nolog":true,
+          "id": url,
+          "source":"widget",
+          "userId":"@viewer",
+          "groupId":"@self"
         },
-        'jsonrpc': '2.0',
-        'key': 'p',
-        'apiVersion': 'v1'
-      })
-    })
-    .done(function(data) {
-      if(data.result) {
-        callback(data.result.metadata.globalCounts.count);
-      } else {
-        callback(0);
-      }
-    })
-    .fail(function(data) { callback(0); });
+        "jsonrpc":"2.0",
+        "key":"p",
+        "apiVersion":"v1"
+      });
+      requestGoogle.onreadystatechange = function() {
+        if (this.readyState === 4) {
+          if (this.status >= 200 && this.status < 400) {
+            var data = JSON.parse(this.responseText);
+            if (data.result.metadata.globalCounts.count) {
+              window[thisId].gplus = data.result.metadata.globalCounts.count;
+              setShareCount(data.result.metadata.globalCounts.count, el, thisId);
+            } else {
+              setShareCount(0, el, thisId);
+            }
+          } else {
+            setShareCount(0, el, thisId);
+          }
+        }
+      };
+      requestGoogle.send(thisDataGoogle);
+    })(thisName, thisId);
   }
 
   // Buffer
-  function buffer(url, callback) {
-    jQuery.ajax({
-      type: 'GET',
-      dataType: 'jsonp',
-      url: 'https://api.bufferapp.com/1/links/shares.json',
-      data: {'url': url}
-    })
-    .done(function(data) { callback(data.shares); })
-    .fail(function(data) { callback(0); });
+  if ((el.classList.contains('socialCount-buffer') || options.total) && !window[thisId].buffer) {
+    window[thisId].buffer = 0;
+    if (el.classList.contains('socialCount-buffer')) {
+      window[thisId].bufferContainer = el;
+    }
+    (function(url, thisId){
+      var scriptBuffer = document.createElement('script');
+      scriptBuffer.src = 'https://api.bufferapp.com/1/links/shares.json?format=jsonp&callback=window.'+thisId+'.callAsyncCount&url=' + url;
+      scriptBuffer.onerror = function() {
+        setShareCount(0, el, thisId);
+      };
+      document.getElementsByTagName('head')[0].appendChild(scriptBuffer);
+    })(thisName, thisId);
   }
+
 };
 
-  /********
-   *
-   * Enhance each button so they open popups
-   *
-   ********/
+
+/********
+*
+* Enhance each button so they open popups
+*
+********/
 (function(win, doc, undefined) {
   'use strict';
-
-  if('addEventListener' in win && 'querySelectorAll' in doc && 'localStorage' in win) {
-    var social = doc.querySelectorAll('.m-social'),
+  if('addEventListener' in window && 'querySelectorAll' in document && 'localStorage' in window) {
+    var social = document.querySelectorAll('.m-social'),
         social_count = social.length;
+
+    var popup = function(url, dimensions) {
+      var left = (screen.width / 2) - (dimensions.width / 2);
+      var top = (screen.height / 2) - (dimensions.height / 2);
+      window.open(url, 'Social Share', 'menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes,width=' + dimensions.width + ',height=430,top=' + top + ',left=' + left);
+    };
 
     for(var i = 0; i < social_count; i++) {
       social[i].addEventListener('click', function(e) {
         e.preventDefault();
-
-        if(e.target) {
-          var target = e.target;
-
-          if(target.nodeName.toLowerCase() === 'img') {
-            var url = target.parentNode.parentNode.href,
-                dimensions;
-
-            if(/twitter/i.test(url)) {
-              dimensions = {width:550, height:430};
-            } else {
-              dimensions = {width:800, height:600};
-            }
-          }
-
-          popup(url, dimensions);
-        }
+        var target = e.target;
+        var url = this.getElementsByTagName('a')[0].href;
+        var dimensions = {width:800, height:600};
+        popup(url, dimensions);
       }, false);
     }
-
-    function popup(url, dimensions) {
-      var left = (screen.width / 2) - (dimensions.width / 2);
-      var top = (screen.height / 2) - (dimensions.height / 2);
-
-      win.open(url, 'Social Share', 'menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes,width=' + dimensions.width + ',height=430,top=' + top + ',left=' + left);
-    }
   }
+
 }(this, this.document));
 
-  /********
-   *
-   * Example usage
-   *
-   ********/
-var spans = document.querySelectorAll('span');
-
-for(var i = 0, ii = spans.length; i < ii; i++) {
-  new SocialCounts(spans[i], {url: 'https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation'});
+/********
+*
+* Example usage
+*
+********/
+var spans = document.getElementsByTagName('span');
+for(var i = 0; i < spans.length; i++) {
+  SocialCounts(spans[i], {url: 'https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation'});
 }
-new SocialCounts(document.getElementById('total'), {url: 'https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation', total: true});
+SocialCounts(document.getElementById('total'), {url: 'https://channels.theinnovationenterprise.com/articles/4-crucial-qualities-of-effective-innovation', total: true});
+SocialCounts(document.getElementById('total2'), {url: 'https://channels.theinnovationenterprise.com/articles/yieldify-s-data-driven-culture-is-central-to-its-success', total: true});
+SocialCounts(document.getElementById('total3'), {url: 'https://channels.theinnovationenterprise.com/articles/why-is-it-important-to-break-the-operational-silos', total: true});
+SocialCounts(document.getElementById('total4'), {url: 'https://channels.theinnovationenterprise.com/articles/sales-competition-and-incrementalism-how-big-data-is-winning-over-the-game-industry', total: true});

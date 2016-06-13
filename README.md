@@ -39,7 +39,7 @@ JS:
 var spans = document.querySelectorAll('[class^=socialCount]');
 
 for(var i = 0, ii = spans.length; i < ii; i++) {
-  new SocialCounts(spans[i]);
+  SocialCounts(spans[i]);
 }
 ```
 
