@@ -179,7 +179,7 @@ window.SocialCounts = function(el, options) {
 (function(win, doc, undefined) {
   'use strict';
   if('addEventListener' in window && 'querySelectorAll' in document && 'localStorage' in window) {
-    var social = document.querySelectorAll('.m-social'),
+    var social = document.querySelectorAll('.m-social__item'),
         social_count = social.length;
 
     var popup = function(url, dimensions) {
