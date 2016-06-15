@@ -1,3 +1,4 @@
+var SocialCountsId = 1;
 window.SocialCounts = function(el, options) {
   if(!el) {
     return;
@@ -9,7 +10,8 @@ window.SocialCounts = function(el, options) {
   var thisName = this.url;
   var thisId = thisName.replace(/[^a-z0-9 ,.?!]/ig, '').replace(/\./g,'');
   if (options.total) {
-    thisId = thisId + 'total';
+    SocialCountsId = SocialCountsId + Math.floor((Math.random() * 100) + 1);
+    thisId = thisId + 'total' + SocialCountsId;
   }
   if (!window[thisId]) {
     window[thisId] = {
