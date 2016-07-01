@@ -76,14 +76,14 @@ window.SocialCounts = function(el, options) {
     window[thisId].facebook = true;
     (function(url, thisId){
       var facebookRequest = new XMLHttpRequest();
-      facebookRequest.open('GET', 'https://graph.facebook.com/?id=' + url, true);
+      facebookRequest.open('GET', 'https://api.facebook.com/method/links.getStats?format=json&urls=' + url, true);
       facebookRequest.onreadystatechange = function() {
         if (this.readyState === 4) {
           if (this.status >= 200 && this.status < 400) {
             var data = JSON.parse(this.responseText);
-            if (data.shares) {
-              window[thisId].facebook = data.shares;
-              setShareCount(data.shares, el, thisId);
+            if (data[0].share_count) {
+              window[thisId].facebook = data[0].share_count;
+              setShareCount(data[0].share_count, el, thisId);
             } else {
               window[thisId].facebook = 0;
               setShareCount(0, el, thisId);
