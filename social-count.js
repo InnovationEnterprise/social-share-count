@@ -1,4 +1,5 @@
 var SocialCountsId = 1;
+var SocialObjects = {};
 window.SocialCounts = function(el, options) {
   if(!el) {
     return;
@@ -8,13 +9,18 @@ window.SocialCounts = function(el, options) {
   this.url = this.options.url || window.location.href;
 
   var thisName = this.url;
-  var thisId = thisName.replace(/[^a-z0-9 ,.?!]/ig, '').replace(/\./g,'');
+  var thisId = thisName.replace(/[^a-z0-9 ,.?!]/ig, '').replace(/\./g,'').replace('httpschannelstheinnovationenterprisecom', '');
+  if (thisId.length > 20) {
+    thisId = thisId.substring(0, 20);
+  }
+  thisId = 'a'+thisId;
   if (options.total) {
     SocialCountsId = SocialCountsId + Math.floor((Math.random() * 100) + 1);
     thisId = thisId + 'total' + SocialCountsId;
   }
-  if (!window[thisId]) {
-    window[thisId] = {
+
+  if (!SocialObjects[thisId]) {
+    SocialObjects[thisId] = {
       'total' : 0,
       'counted' : 0,
       'totalView' : false,
@@ -24,72 +30,75 @@ window.SocialCounts = function(el, options) {
       'buffer': false
     };
   }
-
   if (options.total) {
-    window[thisId].totalView = el;
+    SocialObjects[thisId].totalView = el;
   }
 
   function setShareCount(data, el, thisId) {
-    window[thisId].total = window[thisId].total + data;
-    window[thisId].counted = window[thisId].counted + 1;
+    SocialObjects[thisId].total = SocialObjects[thisId].total + data;
+    SocialObjects[thisId].counted = SocialObjects[thisId].counted + 1;
     if (!options.total){
       el.classList.remove('is-hidden');
       el.textContent = data;
     }
-    if (window[thisId].counted === 4 && window[thisId].totalView) {
-      window[thisId].totalView.textContent = window[thisId].total;
-      delete window[thisId];
+    if (SocialObjects[thisId].counted === 4 && SocialObjects[thisId].totalView) {
+      SocialObjects[thisId].totalView.textContent = SocialObjects[thisId].total;
+
     }
   }
 
-  if (window[thisId].counted === 4) {
+  if (SocialObjects[thisId].counted === 4) {
     setShareCount(0, el, thisName);
   }
 
-  window[thisId].callAsyncCount = function(data) {
+  SocialObjects[thisId].callAsyncCount = function(data) {
     var that = thisId;
     if (data.shares) {
-      window[that].buffer = data.shares;
-      window[that].total = window[that].total + data.shares;
-      if (window[that].bufferContainer){
-        window[that].bufferContainer.classList.remove('is-hidden');
-        window[that].bufferContainer.textContent = data.shares;
+      SocialObjects[that].buffer = data.shares;
+      SocialObjects[that].total = SocialObjects[that].total + data.shares;
+      if (SocialObjects[that].bufferContainer){
+        SocialObjects[that].bufferContainer.classList.remove('is-hidden');
+        SocialObjects[that].bufferContainer.textContent = data.shares;
       }
     } else if (data.count) {
-      window[that].linkedin = data.count;
-      window[that].total = window[that].total + data.count;
-      if (window[that].linkedinContainer){
-        window[that].linkedinContainer.classList.remove('is-hidden');
-        window[that].linkedinContainer.textContent = data.count;
+      SocialObjects[that].linkedin = data.count;
+      SocialObjects[that].total = SocialObjects[that].total + data.count;
+      if (SocialObjects[that].linkedinContainer){
+        SocialObjects[that].linkedinContainer.classList.remove('is-hidden');
+        SocialObjects[that].linkedinContainer.textContent = data.count;
       }
     }
-    window[that].counted = window[that].counted + 1;
-    if (window[that].counted === 4 && window[that].totalView) {
-      window[that].totalView.textContent = window[that].total;
-      delete window[thisId];
+    SocialObjects[that].counted = SocialObjects[that].counted + 1;
+    if (SocialObjects[that].counted === 4 && SocialObjects[that].totalView) {
+      SocialObjects[that].totalView.textContent = SocialObjects[that].total;
+
     }
   };
 
   // Facebook
   // Has CORS enabled so can use XHR
-  if ((el.classList.contains('socialCount-facebook') || options.total) && !window[thisId].facebook) {
-    window[thisId].facebook = true;
+  if ((el.classList.contains('socialCount-facebook') || options.total) && !SocialObjects[thisId].facebook) {
+    SocialObjects[thisId].facebook = true;
     (function(url, thisId){
       var facebookRequest = new XMLHttpRequest();
-      facebookRequest.open('GET', 'https://api.facebook.com/method/links.getStats?format=json&urls=' + url, true);
+      facebookRequest.open('GET', 'http://graph.facebook.com/?id=' + url, true);
+      facebookRequest.onerror = function() {
+        SocialObjects[thisId].facebook = 0;
+        setShareCount(0, el, thisId);
+      };
       facebookRequest.onreadystatechange = function() {
         if (this.readyState === 4) {
           if (this.status >= 200 && this.status < 400) {
             var data = JSON.parse(this.responseText);
-            if (data[0].share_count) {
-              window[thisId].facebook = data[0].share_count;
-              setShareCount(data[0].share_count, el, thisId);
+            if(data && data.share) {
+              SocialObjects[thisId].facebook = data.share.share_count;
+              setShareCount(data.share.share_count, el, thisId);
             } else {
-              window[thisId].facebook = 0;
+              SocialObjects[thisId].facebook = 0;
               setShareCount(0, el, thisId);
             }
           } else {
-            window[thisId].facebook = 0;
+            SocialObjects[thisId].facebook = 0;
             setShareCount(0, el, thisId);
           }
         }
@@ -98,15 +107,16 @@ window.SocialCounts = function(el, options) {
     })(thisName, thisId);
   }
 
-  if ((el.classList.contains('socialCount-linkedin') || options.total) && !window[thisId].linkedin) {
-    window[thisId].linkedin = 0;
+  if ((el.classList.contains('socialCount-linkedin') || options.total) && !SocialObjects[thisId].linkedin) {
+    SocialObjects[thisId].linkedin = 0;
     if (el.classList.contains('socialCount-linkedin')) {
-      window[thisId].linkedinContainer = el;
+      SocialObjects[thisId].linkedinContainer = el;
     }
     (function(url, thisId){
       var scriptLinkedin = document.createElement('script');
-      scriptLinkedin.src = 'https://www.linkedin.com/countserv/count/share?format=jsonp&callback=window.'+thisId+'.callAsyncCount&url=' + url;
+      scriptLinkedin.src = 'https://www.linkedin.com/countserv/count/share?format=jsonp&callback=SocialObjects.'+thisId+'.callAsyncCount&url=' + url;
       scriptLinkedin.onerror = function() {
+        SocialObjects[thisId].linkedin = 0;
         setShareCount(0, el, thisId);
       };
       document.getElementsByTagName('head')[0].appendChild(scriptLinkedin);
@@ -115,8 +125,8 @@ window.SocialCounts = function(el, options) {
 
 
   // Google Plus
-  if ((el.classList.contains('socialCount-gplus') || options.total) && !window[thisId].gplus) {
-    window[thisId].gplus = 0;
+  if ((el.classList.contains('socialCount-gplus') || options.total) && !SocialObjects[thisId].gplus) {
+    SocialObjects[thisId].gplus = 0;
     (function(url, thisId){
       var requestGoogle = new XMLHttpRequest();
       requestGoogle.open('POST', 'https://clients6.google.com/rpc', true);
@@ -135,17 +145,23 @@ window.SocialCounts = function(el, options) {
         "key":"p",
         "apiVersion":"v1"
       });
+      requestGoogle.onerror = function() {
+        SocialObjects[thisId].gplus = 0;
+        setShareCount(0, el, thisId);
+      };
       requestGoogle.onreadystatechange = function() {
         if (this.readyState === 4) {
           if (this.status >= 200 && this.status < 400) {
             var data = JSON.parse(this.responseText);
             if (data.result.metadata.globalCounts.count) {
-              window[thisId].gplus = data.result.metadata.globalCounts.count;
+              SocialObjects[thisId].gplus = data.result.metadata.globalCounts.count;
               setShareCount(data.result.metadata.globalCounts.count, el, thisId);
             } else {
+              SocialObjects[thisId].gplus = 0;
               setShareCount(0, el, thisId);
             }
           } else {
+            SocialObjects[thisId].gplus = 0;
             setShareCount(0, el, thisId);
           }
         }
@@ -155,15 +171,16 @@ window.SocialCounts = function(el, options) {
   }
 
   // Buffer
-  if ((el.classList.contains('socialCount-buffer') || options.total) && !window[thisId].buffer) {
-    window[thisId].buffer = 0;
+  if ((el.classList.contains('socialCount-buffer') || options.total) && !SocialObjects[thisId].buffer) {
+    SocialObjects[thisId].buffer = 0;
     if (el.classList.contains('socialCount-buffer')) {
-      window[thisId].bufferContainer = el;
+      SocialObjects[thisId].bufferContainer = el;
     }
     (function(url, thisId){
       var scriptBuffer = document.createElement('script');
-      scriptBuffer.src = 'https://api.bufferapp.com/1/links/shares.json?format=jsonp&callback=window.'+thisId+'.callAsyncCount&url=' + url;
+      scriptBuffer.src = 'https://api.bufferapp.com/1/links/shares.json?format=jsonp&callback=SocialObjects.'+thisId+'.callAsyncCount&url=' + url;
       scriptBuffer.onerror = function() {
+        SocialObjects[thisId].bufferContainer = 0;
         setShareCount(0, el, thisId);
       };
       document.getElementsByTagName('head')[0].appendChild(scriptBuffer);
@@ -171,8 +188,6 @@ window.SocialCounts = function(el, options) {
   }
 
 };
-
-
 /********
 *
 * Enhance each button so they open popups
